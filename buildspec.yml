@@ -17,14 +17,12 @@ phases:
       - docker build -t ecrt .
       # - docker build -t $REPOSITORY_URI .
       # - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-      # - docker tag ecrt:latest $REPOSITORY_URI:latest
-      - docker tag ecrt:latest 609136084578.dkr.ecr.eu-central-1.amazonaws.com/test-tests-n0y7k2sc9ql0:latest
+      - docker tag ecrt:latest $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      # - docker push $REPOSITORY_URI:latest
-      - docker push 609136084578.dkr.ecr.eu-central-1.amazonaws.com/test-tests-n0y7k2sc9ql0:latest
+      - docker push $REPOSITORY_URI:latest
       # - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"sfs-ecr-test","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
