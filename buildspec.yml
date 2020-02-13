@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    REPOSITORY_URI: 609136084578.dkr.ecr.$(echo $AWS_DEFAULT_REGION).amazonaws.com/$(echo $REPOSITORY_NAME) #TODO: Change account ID
+    REPOSITORY_URI: 609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME #TODO: Change account ID
 
 phases:
   pre_build:
@@ -18,15 +18,15 @@ phases:
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_NAME .
       # - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-      - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
+      - docker tag $REPOSITORY_NAME:latest 609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:latest
+      - docker push 609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:latest
       # - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":$REPOSITORY_NAME,"imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - printf '[{"name":$REPOSITORY_NAME,"imageUri":"%s"}]' 609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:latest > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
