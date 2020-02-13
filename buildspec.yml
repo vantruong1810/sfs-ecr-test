@@ -1,5 +1,8 @@
-version: 0.1
+version: 0.2
 
+env:
+  variables:
+    REPOSITORY_URI: "609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME" #TODO: Change account ID
 
 phases:
   pre_build:
@@ -7,17 +10,15 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=609136084578.dkr.ecr.eu-central-1.amazonaws.com/test-tests-n0y7k2sc9ql0
-      # - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      # - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t ecrt .
-      # - docker build -t $REPOSITORY_URI .
+      - docker build -t $REPOSITORY_NAME .
       # - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-      - docker tag ecrt:latest $REPOSITORY_URI:latest
+      - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build completed on `date`
@@ -25,8 +26,7 @@ phases:
       - docker push $REPOSITORY_URI:latest
       # - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      # - printf '[{"name":"sfs-ecr-test","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - printf '[{"name":"sfs-ecr-test","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - printf '[{"name":$REPOSITORY_NAME,"imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
