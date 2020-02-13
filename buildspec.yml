@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    REPOSITORY_URI: 609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME #TODO: Change account ID
+    REPOSITORY_URI: $(echo 609136084578.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME) #TODO: Change account ID
 
 phases:
   pre_build:
